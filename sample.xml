@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?tpl version="1.1"?>
 
 <program>
     <func name="main">
         <print>Hello,World</print>
+        <if flag="1">
+            <print end="\n\n">if</print>
+        </if>
+        <else>
+            <print end="\n\n">else</print>
+        </else>
+        <if flag="0">
+            <print end="\n\n">if</print>
+        </if>
+        <else>
+            <print end="\n\n">else</print>
+        </else>
     </func>
 </program>

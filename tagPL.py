@@ -9,6 +9,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 varDict = {}
+elseFlag = False
 
 #テーブル定数ここから
 
@@ -20,10 +21,14 @@ def iptHand(elm):
     root = ET.parse(elm.text).getroot()
     funcs = root.findall("func")
     funcDict.update(getFuncDict(funcs))
+    
+def toggleElseFlag():
+    global elseFlag
+    elseFlag = False if elseFlag else True
 
 TABLE = {
     "print":lambda elm:
-        print(varView(elm.text),end = elm.attrib.get("end") or "\n")
+        print(varView(elm.text).encode().decode("unicode_escape"),end = elm.attrib.get("end","\n").encode().decode("unicode_escape"))
     ,
     "input":lambda elm:
         varDict.update({elm.attrib.get("name") : input(elm.text or "")})
@@ -35,7 +40,10 @@ TABLE = {
         varDict.update({elm.attrib.get("name") : elm.text})
     ,
     "if":lambda elm:
-        (funcRun(elm) if elm.attrib.get("flag") and bool(int(varView(elm.attrib.get("flag")))) else None)
+        (funcRun(elm) if elm.attrib.get("flag") and bool(int(varView(elm.attrib.get("flag")))) else toggleElseFlag())
+    ,
+    "else":lambda elm:
+        (funcRun(elm) and toggleElseFlag if elseFlag else None)
     ,
     "while":whileHand
     ,
@@ -71,6 +79,8 @@ def getFuncDict(funcs):
     
 def funcRun(func):
     for elm in func:
+        if elm.tag != "else":
+            elseFlag = False
         TABLE[elm.tag](elm)
         
 def varView(name):
