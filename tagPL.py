@@ -28,7 +28,7 @@ def toggleElseFlag():
 
 TABLE = {
     "print":lambda elm:
-        print(varView(elm.text).encode().decode("unicode_escape"),end = elm.attrib.get("end","\n").encode().decode("unicode_escape"))
+        print(varView((elm.text or "").encode().decode("unicode_escape")),end = elm.attrib.get("end","\n").encode().decode("unicode_escape"))
     ,
     "input":lambda elm:
         varDict.update({elm.attrib.get("name") : input(elm.text or "")})
